@@ -5,7 +5,8 @@
   "main": "reddit-crawler.js",
   "bin": "cli.js",
   "scripts": {
-    "test": "mocha test --timeout 25000"
+    "test": "mocha test --timeout 25000",
+    "cli-example": "./cli.js \"worldnews;cats\""
   },
   "repository": {
     "type": "git",
@@ -26,6 +27,7 @@
   },
   "dependencies": {
     "chromedriver": "^76.0.1",
-    "selenium-webdriver": "^4.0.0-alpha.4"
+    "selenium-webdriver": "^4.0.0-alpha.4",
+    "yargs": "^14.0.0"
   }
 }
