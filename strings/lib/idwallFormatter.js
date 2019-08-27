@@ -12,7 +12,16 @@
 
 class IdwallFormatter {
   /* eslint-disable class-methods-use-this */
-  format(text = '', limit = 40, justify = false) {
+  format(input = '', limit = 40, justify = false) {
+    let text = input;
+    if (typeof text !== 'string') {
+      // Se texto não for do tipo string e nem puder ser parseado
+      // para string, então retorna string vazia como default.
+      if (typeof text.toString() !== 'function') {
+        return '';
+      }
+      text = text.toString();
+    }
     return text
       // Quebra o texto em palavras.
       .split(/\s|\n/)
@@ -63,6 +72,14 @@ class IdwallFormatter {
         // faltantes para adicionar irá alocar novos espaços entre as
         // palavras da linha.
         const words = line.split(/\s/);
+        // Quando a linha tiver apenas uma palavra(sem espaços)
+        // deve retornar o texto alinhado a direita com todos os
+        // espaços faltantes à esquerda.
+        if (words.length === 1) {
+          let pad = '';
+          for (let i = 0; i < missing; i += 1) pad += ' ';
+          return pad + line;
+        }
         const lastIndex = words.length - 1;
         let index = 0;
         while (missing) {
