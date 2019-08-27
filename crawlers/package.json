@@ -23,5 +23,9 @@
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-plugin-import": "^2.18.2",
     "mocha": "^6.2.0"
+  },
+  "dependencies": {
+    "chromedriver": "^76.0.1",
+    "selenium-webdriver": "^4.0.0-alpha.4"
   }
 }
