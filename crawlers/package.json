@@ -5,7 +5,7 @@
   "main": "reddit-crawler.js",
   "bin": "cli.js",
   "scripts": {
-    "test": "mocha test"
+    "test": "mocha test --timeout 25000"
   },
   "repository": {
     "type": "git",
