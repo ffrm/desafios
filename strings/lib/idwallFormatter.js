@@ -1,9 +1,16 @@
+// Exporta a classe IdwallFormatter que possui apenas o método format.
+// Neste método ocorre a limitação das linhas do texto em um determinado
+// comprimento (setado no parâmetro limit) e a justificação das linhas do
+// passo anterior.
+// Nota: As etapas do método format poderiam ser divididas em funções puras.
+// Por exemplo, a redução do array de palavras em linhas limitadas ao
+// dado comprimento poderia ser refatorada dentro da seguinte função:
+// const wrapText = (text, limit) => text.split(...).reduce(...);
+// E a tranformação do array de linhas em linhas justificadas poderia
+// ser refatorada dentro da seguinte função:
+// const justifyText = (lines, limit) => lines.map(...);
+
 class IdwallFormatter {
-  // Nota: O reduce do array de palavras em linhas e o map
-  // para justificar o array de linhas abaixo podem ser refatorados
-  // em funções puras e utilizados fora desta classe. O primeiro receberia
-  // o texto "cru" e o limite para cada linha e a segunda função receberia
-  // o array de linhas e o limite para a mesma.
   /* eslint-disable class-methods-use-this */
   format(text = '', limit = 40, justify = false) {
     return text
