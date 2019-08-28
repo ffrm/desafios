@@ -7,4 +7,8 @@ Desafio IDwall  desenvolvidor por [Fernando Rama](https://github.com/ffrm). A do
 
 Existe também comentários mais aprofundados dentro dos arquivos dos códigos.
 
+[Github](https://github.com/ffrm)
+
+[LinkedIn](https://www.linkedin.com/in/fernando-franzoni-08081160/)
+
 Gostaria de agradecer a oportunidade.
