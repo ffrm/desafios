@@ -35,7 +35,7 @@ bot
     console.log(`Listando subreddits "${subreddits}"…`);
     try {
       const threads = await redditCrawler.getSubredditsHotThreads(subreddits);
-      console.log(`${threads.length} thread(s) encontrada(s).`);
+      console.log(`${threads.length} thread(s) encontrada(s)`);
       if (!threads || !threads.length) {
         return reply(BOT_EMPTY_THREAD_LIST_MESSAGE);
       }

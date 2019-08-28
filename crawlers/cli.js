@@ -14,4 +14,7 @@ redditCrawler
   .getSubredditsHotThreads(subreddits)
   .then(printThreadsList)
   .then(destroyCrawler)
-  .catch(destroyCrawler);
+  .catch((exception) => {
+    console.log(exception);
+    destroyCrawler();
+  });

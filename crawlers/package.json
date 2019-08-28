@@ -6,7 +6,7 @@
   "bin": "cli.js",
   "scripts": {
     "test": "mocha test --timeout 25000",
-    "cli-example": "./cli.js \"worldnews;cats\"",
+    "cli-example": "./cli.js \"AskReddit;cats;worldnews\"",
     "bot": "node telegram-robot.js"
   },
   "repository": {
