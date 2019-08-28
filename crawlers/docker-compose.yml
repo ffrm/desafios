@@ -1,0 +1,18 @@
+version: '3'
+services:
+  selenium:
+    image: selenium/standalone-chrome
+    ports:
+      - 4444:4444
+  app:
+    build: .
+    command: npm run bot
+    environment:
+      - .env
+      # Seta flag para que o crawler do node crie
+      # o selenium driver utilizando o serviço 'selenium'
+      # configurado neste arquivo.
+      - DOCKER=1
+    links:
+      # Alterar este nome de acordo com o serviço do acima.
+      - selenium
