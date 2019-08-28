@@ -1,0 +1,38 @@
+{
+  "name": "idwall-crawlers",
+  "version": "1.0.0",
+  "description": "Desafio Idwall - Crawlers",
+  "main": "reddit-crawler.js",
+  "bin": "cli.js",
+  "scripts": {
+    "test": "mocha test --timeout 25000",
+    "lint": "eslint *.js",
+    "cli": "./cli.js",
+    "cli-example": "./cli.js \"AskReddit;cats;worldnews\"",
+    "bot": "node telegram-robot.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ffrm/desafios.git"
+  },
+  "author": "Fernando Rama",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ffrm/desafios/issues"
+  },
+  "homepage": "https://github.com/ffrm/desafios#readme",
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "eslint": "^6.2.2",
+    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-plugin-import": "^2.18.2",
+    "mocha": "^6.2.0"
+  },
+  "dependencies": {
+    "chromedriver": "^76.0.1",
+    "dotenv": "^8.1.0",
+    "selenium-webdriver": "^4.0.0-alpha.4",
+    "telegraf": "^3.32.0",
+    "yargs": "^14.0.0"
+  }
+}

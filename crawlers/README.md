@@ -1,31 +1,57 @@
-# Desafio 2: Crawlers
+# Crawlers
+Implementa uma solução para o desafio de Crawlers proposto.
+Este módulo está dividido entre os seguintes arquivos:
 
-Parte do trabalho na IDwall inclui desenvolver *crawlers/scrapers* para coletar dados de websites.
-Como nós nos divertimos trabalhando, às vezes trabalhamos para nos divertir!
+- ```reddit-crawler``` - Web scraper para consultar as threads dos subreddits listados utilizando o Selenium webdriver.
+- ```telegram-robot``` - Conecta ao robô do Telegram e aguarda pelo comando ```/NadaPraFazer```, busca a lista de threads utilizando o crawler e retorna as threads encontradas no chat.
+- ```cli``` - CLI simples que exibe como texto formatado todos os resultados de threads através do crawler.
 
-O Reddit é quase como um fórum com milhares de categorias diferentes. Com a sua conta, você pode navegar por assuntos técnicos, ver fotos de gatinhos, discutir questões de filosofia, aprender alguns life hacks e ficar por dentro das notícias do mundo todo!
+## Test
+O script de teste irá executar o teste de integração aonde utilizando o ```reddit-crawler``` diretamente.
+```bash
+npm run test
+```
 
-Subreddits são como fóruns dentro do Reddit e as postagens são chamadas *threads*.
+## Lint
+```bash
+npm run lint
+```
 
-Para quem gosta de gatos, há o subreddit ["/r/cats"](https://www.reddit.com/r/cats) com threads contendo fotos de gatos fofinhos.
-Para *threads* sobre o Brasil, vale a pena visitar ["/r/brazil"](https://www.reddit.com/r/brazil) ou ainda ["/r/worldnews"](https://www.reddit.com/r/worldnews/).
-Um dos maiores subreddits é o "/r/AskReddit".
+## CLI
+Para o resultado da ```primeira etapa deste teste```, podemos listar os subreddits diretamente pela CLI. Esta simples CLI irá criar uma instância do ```reddit-crawler``` e a utilizará diretamente. A lista de threads encontradas serão apresentadas na tela como texto(formatado).
+```bash
+npm run cli AskReddit;worldnews
 
-Cada *thread* possui uma pontuação que, simplificando, aumenta com "up votes" (tipo um like) e é reduzida com "down votes".
+# ou caso tenha o chromedriver instalado e setado na máquina:
+./cli.js AskReddit;worldnews
+```
 
-Sua missão é encontrar e listar as *threads* que estão bombando no Reddit naquele momento!
-Consideramos como bombando *threads* com 5000 pontos ou mais.
+## Telegram
+Para a visualização dos resultados da ```segunda etapa deste teste``` teremos que criar e configurar um novo robô do Telegram e iniciar uma instância deste robô.
 
-## Entrada
-- Lista com nomes de subreddits separados por ponto-e-vírgula (`;`). Ex: "askreddit;worldnews;cats"
+### Criando e configurando um novo robô
 
-### Parte 1
-Gerar e imprimir uma lista contendo a pontuação, subreddit, título da thread, link para os comentários da thread e link da thread.
-Essa parte pode ser um CLI simples, desde que a formatação da impressão fique legível.
+- Instalar o aplicativo Telegram
+- Buscar pelo chat "BotFather"
+- Digitar o comando ```/newbot```
+- Entrar nome e username para o bot
+- Copiar o token do bot exibido no fim da criação
+- Criar ou editar o arquivo ```.env``` nesta pasta e setar a chave ```TELEGRAM_BOT_TOKEN``` com o valor copiado no passo anterior
 
-### Parte 2
-Construir um robô que nos envie essa lista via Telegram sempre que receber o comando `/NadaPraFazer [+ Lista de subrredits]` (ex.: `/NadaPraFazer programming;dogs;brazil`)
+- [Iniciar o robô](#iniciando-o-robô)
+- Abrir o chat com o bot criado e digitar ```/NadaPraFazer + lista de subreddits separados por ;```
 
-### Dicas
- - Use https://old.reddit.com/
- - Qualquer método para coletar os dados é válido. Caso não saiba por onde começar, procure por JSoup (Java), SeleniumHQ (Java), PhantomJS (Javascript) e Beautiful Soup (Python).
+### Iniciando o robô
+Para utilizar o robô previamente criado devemos inicializar o serviço de bot do arquivo ```telegram-bot```. O serviço do robô utilizará o ```reddit-crawler``` para buscar todas as threads dos subreddits inseridos. O robô pode ser iniciado das seguintes formas:
+
+#### Manual
+O robô pode ser iniciado de forma manual através do script ```bot```:
+```bash
+npm run bot
+```
+
+#### Docker 🐳
+A solução Docker proposta utiliza o ```docker-compose``` para subir dois serviços. O primeiro serviço se refere ao robô propriamente dito e o segundo serviço se refere ao server do Selenium (executado na porta 4444) disponível para Docker. Desta forma, o driver do selenium será criado utilizando este segundo serviço. Para iniciar o robô, basta executar:
+```bash
+docker-compose build && docker-compose up
+```
