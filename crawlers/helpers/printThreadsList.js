@@ -1,15 +1,7 @@
+const formatThread = require('./formatThread');
+
 const printThreadsList = (threads) => {
-  console.log(
-    threads
-      .map(({
-        title,
-        votes,
-        subreddit,
-        comments,
-        thread,
-      }) => `${title}\n${subreddit} - ${votes}\nComment: ${comments}\nSee more: ${thread}`)
-      .join('\n\n')
-  );
+  console.log(threads.map(thread => formatThread(thread)).join('\n\n'));
 };
 
 module.exports = printThreadsList;

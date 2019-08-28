@@ -6,7 +6,8 @@
   "bin": "cli.js",
   "scripts": {
     "test": "mocha test --timeout 25000",
-    "cli-example": "./cli.js \"worldnews;cats\""
+    "cli-example": "./cli.js \"worldnews;cats\"",
+    "bot": "node telegram-robot.js"
   },
   "repository": {
     "type": "git",
@@ -27,7 +28,9 @@
   },
   "dependencies": {
     "chromedriver": "^76.0.1",
+    "dotenv": "^8.1.0",
     "selenium-webdriver": "^4.0.0-alpha.4",
+    "telegraf": "^3.32.0",
     "yargs": "^14.0.0"
   }
 }
