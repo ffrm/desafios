@@ -8,13 +8,14 @@ const [subreddits] = unamedArgs;
 
 const redditCrawler = new RedditCrawler();
 
-const destroyCrawler = async () => await redditCrawler.destroy();
+const destroyCrawler = async () => redditCrawler.destroy();
 
 redditCrawler
   .getSubredditsHotThreads(subreddits)
   .then(printThreadsList)
   .then(destroyCrawler)
   .catch((exception) => {
+    /* eslint-disable no-console */
     console.log(exception);
     destroyCrawler();
   });

@@ -6,6 +6,7 @@
   "bin": "cli.js",
   "scripts": {
     "test": "mocha test --timeout 25000",
+    "lint": "eslint *.js",
     "cli-example": "./cli.js \"AskReddit;cats;worldnews\"",
     "bot": "node telegram-robot.js"
   },

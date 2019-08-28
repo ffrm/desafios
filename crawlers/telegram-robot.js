@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 require('dotenv').config();
 const Telegraf = require('telegraf');
 const RedditCrawler = require('./reddit-crawler');
@@ -39,12 +40,15 @@ bot
       if (!threads || !threads.length) {
         return reply(BOT_EMPTY_THREAD_LIST_MESSAGE);
       }
-      threads.map(thread => formatThread(thread)).forEach(thread => reply(thread));
+      threads
+        .map((thread) => formatThread(thread))
+        .forEach((thread) => reply(thread));
     } catch (exception) {
       console.log(exception);
       reply(BOT_ERROR_MESSAGE);
     }
+    return null;
   })
   .launch();
 
-process.on('exit', async () => await redditCrawler.destroy());
+process.on('exit', async () => redditCrawler.destroy());
