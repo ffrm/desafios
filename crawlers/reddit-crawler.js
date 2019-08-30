@@ -59,6 +59,7 @@ class RedditCrawler {
   }
 
   async destroy() {
+    log('\nDestruíndo crawler…');
     const { driver } = this;
     if (driver) {
       return driver.quit();

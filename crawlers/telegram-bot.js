@@ -1,11 +1,11 @@
 require('dotenv').config();
 const Telegraf = require('telegraf');
-const RedditCrawler = require('./reddit-crawler');
 const formatThread = require('./helpers/formatThread');
+const createCrawler = require('./createCrawler');
 
 const { log } = console;
 
-const redditCrawler = new RedditCrawler();
+const redditCrawler = createCrawler();
 
 const { TELEGRAM_BOT_TOKEN: telegramBotToken } = process.env;
 
@@ -73,8 +73,5 @@ bot
   .command('NadaPraFazer', handleBotCommand)
   // Inicia o bot.
   .launch();
-
-// Antes que o processo node finalize, destrói o crawler.
-process.on('exit', async () => redditCrawler.destroy());
 
 module.exports = bot;
