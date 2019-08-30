@@ -96,7 +96,22 @@ class RedditCrawler {
       log(subreddit, '-', `Carregando: ${subredditUrl}`);
       log(subreddit, '-', 'Aguardando carregamento da página…');
       await driver.get(subredditUrl);
-      await driver.wait(until.elementLocated(By.css(THREAD_SELECTOR)), PAGE_LOAD_MAX_WAIT_TIME);
+      // Se a mensagem "there doesn't seem to be anything here" aparecer na
+      // tela após o carregamento da página significa que o subreddit listado
+      // não existe ou não possui nenhuma thread.
+      // Para verificar se a página carregou, falhou, ou subreddit não existe
+      // irá criar uma promise que aguarda o primeiro elemento referente ao
+      // carregamento ou erro.
+      await new Promise((resolve, reject) => {
+        driver.wait(
+          until.elementLocated(By.css(THREAD_SELECTOR)),
+          PAGE_LOAD_MAX_WAIT_TIME
+        ).then(resolve);
+        driver.wait(
+          until.elementLocated(By.css('#noresults')),
+          PAGE_LOAD_MAX_WAIT_TIME
+        ).then(() => reject(`Error: "${subreddit}" seems to not exists`));
+      });
       log(subreddit, '-', 'Página carregada com sucesso!');
     };
 
@@ -163,18 +178,23 @@ class RedditCrawler {
       threads.filter(({ votes }) => votes >= HOT_THREADS_MIN_VOTES)
     );
 
-    // Aguarda a página do subreddit ser carregada.
-    await loadPage();
-    // Lista todos os elementos de threads na tela.
-    const threadsList = await getThreads();
-    // Transforma a lista de elementos que representam as threads
-    // em objetos com a propriedades requisitadas de thread.
-    const threads = await describeThreadsList(threadsList);
-    // Filtra a lista de threads trazendo apenas as que tiverem
-    // a propriedade de upvotes maior que o HOT_THREADS_MIN_VOTES.
-    const hotThreads = filterHotThreads(threads);
-    // Return as threads.
-    return hotThreads;
+    try {
+      // Aguarda a página do subreddit ser carregada.
+      await loadPage();
+      // Lista todos os elementos de threads na tela.
+      const threadsList = await getThreads();
+      // Transforma a lista de elementos que representam as threads
+      // em objetos com a propriedades requisitadas de thread.
+      const threads = await describeThreadsList(threadsList);
+      // Filtra a lista de threads trazendo apenas as que tiverem
+      // a propriedade de upvotes maior que o HOT_THREADS_MIN_VOTES.
+      const hotThreads = filterHotThreads(threads);
+      // Return as threads.
+      return hotThreads;
+    } catch (exception) {
+      log(exception);
+      return [];
+    }
   }
 }
 
