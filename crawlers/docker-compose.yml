@@ -1,5 +1,12 @@
 version: '3'
 services:
+  # O "reddit-crawler.js" irá criar uma
+  # instância do driver do selenium utilizando este serviço.
+  # A referência à este serviço está presente no arquivo do crawler
+  # no padrão http://selenium:4444/wd/hub.
+  # Importante: Caso o nome do serviço do selenium abaixo sejá alterado,
+  # a url do arquivo do crawler deverá ser atualizada conforme o novo nome.
+  # Ex: http://<novo_nome>:4444/wd/hub
   selenium:
     image: selenium/standalone-chrome
     ports:
@@ -14,5 +21,5 @@ services:
       # configurado neste arquivo.
       - DOCKER=1
     links:
-      # Alterar este nome de acordo com o serviço do acima.
+      # Alterar este nome de acordo com o serviço do selenium acima.
       - selenium
