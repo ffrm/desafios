@@ -3,7 +3,7 @@ const Telegraf = require('telegraf');
 const RedditCrawler = require('./reddit-crawler');
 const formatThread = require('./helpers/formatThread');
 
-const log = console.log;
+const { log } = console;
 
 const redditCrawler = new RedditCrawler();
 

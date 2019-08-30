@@ -3,7 +3,7 @@ const args = require('yargs').argv;
 const RedditCrawler = require('./reddit-crawler');
 const printThreadsList = require('./helpers/printThreadsList');
 
-const log = console.log;
+const { log } = console;
 
 // Obtém os argumentos da linha de comando que não
 // possuem alias atrelado. Esta string encontrada representa
