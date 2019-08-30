@@ -4,6 +4,8 @@ const chrome = require('selenium-webdriver/chrome');
 const parseSubredditVotes = require('./helpers/parseSubredditVotes');
 const resolveSubredditsList = require('./helpers/resolveSubredditsList');
 
+const { log } = console;
+
 // Salva boolean para saber se processo está sendo ou não
 // executado dentro de um container do Docker. Será utilizado
 // para criar um novo driver do selenium.
@@ -49,7 +51,9 @@ class RedditCrawler {
 
   async getDriver() {
     if (!this.driver) {
+      log('Criando driver selenium…');
       await this.createDriver();
+      log('Driver criado com sucesso!');
     }
     return this.driver;
   }
@@ -65,8 +69,13 @@ class RedditCrawler {
   // Este método recebe um texto contendo o nome de todos os subreddits
   // que devem ser listados. Os subreddits devem ser separados por ';'
   async getSubredditsHotThreads(subreddits) {
+    // Transforma o texto de subreddits em um array de subreddits.
     const subredditsList = resolveSubredditsList(subreddits);
+    // Após a listagem das threads as mesmas irão ser resolvidas em um array bidimensional.
+    // Aplica um reduce neste array de resultado para retornar o mesmo em apenas uma dimensão.
     const reduceThreadsList = (threads) => threads.reduce((a, b) => a.concat(b), []);
+    // Aguarda as promises de todos os subreddits que estão sendo listados e por fim
+    // retorna a lista de threads de forma "reduzida".
     return Promise.all(
       subredditsList.map((subreddit) => this._getSubredditHotThreads(subreddit)),
     ).then(reduceThreadsList);
@@ -76,37 +85,59 @@ class RedditCrawler {
   // Este método privado deve ser apenas chamado através do método
   // público 'getSubredditsHotThreads' para cada subreddit informado.
   async _getSubredditHotThreads(subreddit) {
-    // Obtem ou cria driver selenium.
-    const driver = await this.getDriver();
-
     const subredditUrl = resolveSubredditUrl(subreddit);
 
+    log(subreddit, '-', `Listando "${subreddit}" subreddit…`);
+
+    const driver = await this.getDriver();
+
     const loadPage = async () => {
+      log(subreddit, '-', `Carregando: ${subredditUrl}`);
+      log(subreddit, '-', 'Aguardando carregamento da página…');
       await driver.get(subredditUrl);
       await driver.wait(until.elementLocated(By.css(THREAD_SELECTOR)), PAGE_LOAD_MAX_WAIT_TIME);
+      log(subreddit, '-', 'Página carregada com sucesso!');
     };
 
     const getThreads = async () => driver.findElements(By.css(THREAD_SELECTOR));
 
-    const getThreadTitle = async (thread) => (
-      thread.findElement(By.css(THREAD_TITLE_SELECTOR)).getText()
-    );
-
-    const getThreadVotes = async (thread) => {
-      const votes = await thread.findElement(By.css(THREAD_VOTES_SELECTOR)).getText();
-      return parseSubredditVotes(votes);
+    // Recebe o elemento da thread e o método que deve ser executado em cima do elemento
+    // para obter a informação desejada. O último parâmetro pode receber um valor default
+    // para eventuais exceptions não quebrarem a listagem de outras propriedades da thread.
+    const getThreadProperty = async (thread, method, dflt) => {
+      try {
+        return method(thread);
+      } catch (exception) {
+        log(subreddit, '-', exception);
+        return dflt || null;
+      }
     };
 
-    const getThreadSubreddit = async (thread) => thread.getAttribute(THREAD_SUBREDDIT_ATTR_NAME);
+    const getThreadTitle = async (thread) => getThreadProperty(thread, (el) => (
+      el.findElement(By.css(THREAD_TITLE_SELECTOR)).getText()
+    ), '');
 
-    const getThreadCommentsUrl = async (thread) => thread
-      .findElement(By.css(THREAD_COMMENTS_URL_SELECTOR))
-      .getAttribute('href');
+    const getThreadVotes = async (thread) => getThreadProperty(thread, async (el) => {
+      const votes = await el.findElement(By.css(THREAD_VOTES_SELECTOR)).getText();
+      return parseSubredditVotes(votes);
+    }, 0);
 
-    const getThreadUrl = async (thread) => thread
-      .findElement(By.css(THREAD_URL_SELECTOR))
-      .getAttribute('href');
+    const getThreadSubreddit = async (thread) => getThreadProperty(thread, (el) => (
+      el.getAttribute(THREAD_SUBREDDIT_ATTR_NAME)
+    ), '');
 
+    const getThreadCommentsUrl = async (thread) => getThreadProperty(thread, (el) => (
+      el.findElement(By.css(THREAD_COMMENTS_URL_SELECTOR)).getAttribute('href')
+    ), '');
+
+    const getThreadUrl = async (thread) => getThreadProperty(thread, (el) => (
+      el.findElement(By.css(THREAD_URL_SELECTOR)).getAttribute('href')
+    ), '');
+
+    // Recebe o elemento web que representa o tópico da thread e busca
+    // dentro deste elemento todos os demais elementos aonde estão os textos
+    // das propriedades da thread.
+    // Retornrá um json contendo todas as propriedades da thread pedidas no desafio.
     const describeThread = async (thread) => {
       const title = await getThreadTitle(thread);
       const votes = await getThreadVotes(thread);
@@ -122,12 +153,14 @@ class RedditCrawler {
       };
     };
 
-    const describeThreadsList = async (threads) => Promise.all(
-      threads.map((thread) => describeThread(thread)),
-    );
+    const describeThreadsList = async (threads) => {
+      log(subreddit, '-', 'Listando threads…');
+      return Promise.all(threads.map((thread) => describeThread(thread)));
+    };
 
-    const filterHotThreads = (threads) => threads
-      .filter(({ votes }) => votes >= HOT_THREADS_MIN_VOTES);
+    const filterHotThreads = (threads) => (
+      threads.filter(({ votes }) => votes >= HOT_THREADS_MIN_VOTES)
+    );
 
     // Aguarda a página do subreddit ser carregada.
     await loadPage();
