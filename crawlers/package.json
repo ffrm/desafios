@@ -9,7 +9,7 @@
     "lint": "eslint *.js",
     "cli": "./cli.js",
     "cli-example": "./cli.js \"AskReddit;cats;worldnews\"",
-    "bot": "node telegram-robot.js"
+    "bot": "node telegram-bot.js"
   },
   "repository": {
     "type": "git",
