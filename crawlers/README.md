@@ -3,7 +3,7 @@ Implementa uma solução para o desafio de Crawlers proposto.
 Este módulo está dividido entre os seguintes arquivos:
 
 - ```reddit-crawler``` - Web scraper para consultar as threads dos subreddits listados utilizando o Selenium webdriver.
-- ```telegram-robot``` - Conecta ao robô do Telegram e aguarda pelo comando ```/NadaPraFazer```, busca a lista de threads utilizando o crawler e retorna as threads encontradas no chat.
+- ```telegram-bot``` - Conecta ao robô do Telegram e aguarda pelo comando ```/NadaPraFazer```, busca a lista de threads utilizando o crawler e retorna as threads encontradas no chat.
 - ```cli``` - CLI simples que exibe como texto formatado todos os resultados de threads através do crawler.
 
 ## Test
