@@ -5,10 +5,7 @@ Implementa a solução para o desafio proposto de manipulação de strings. A ma
 ```javascript
 const IdwallFormatter = require('idwall/strings');
 const idwallFormatter = new IdwallFormatter();
-const inputText = '...';
-const limit = 40;
-const justify = true;
-idwallFormatter.format(inputText, limit, justify);
+idwallFormatter.format('...', 40, true);
 ```
 
 ### Parameters
