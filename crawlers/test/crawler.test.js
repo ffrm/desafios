@@ -1,7 +1,7 @@
 const { expect } = require('chai');
-const RedditCrawler = require('../reddit-crawler');
+const createCrawler = require('../createCrawler');
 
-const redditCrawler = new RedditCrawler();
+const redditCrawler = createCrawler();
 
 describe('Crawlers', () => {
   it('deve retornar ao menos uma hot thread para o subreddit "worldnews"', async () => {
@@ -10,5 +10,3 @@ describe('Crawlers', () => {
     expect(containsWorldNewsThread).to.equal(true);
   });
 });
-
-after(async () => await redditCrawler.destroy());
