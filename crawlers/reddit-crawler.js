@@ -103,14 +103,21 @@ class RedditCrawler {
       // irá criar uma promise que aguarda o primeiro elemento referente ao
       // carregamento ou erro.
       await new Promise((resolve, reject) => {
+        let resolved = false;
+        const _resolve = () => {
+          if (!resolved) resolve();
+          resolved = true;
+        };
         driver.wait(
           until.elementLocated(By.css(THREAD_SELECTOR)),
           PAGE_LOAD_MAX_WAIT_TIME
-        ).then(resolve);
+        ).then(_resolve);
         driver.wait(
           until.elementLocated(By.css('#noresults')),
           PAGE_LOAD_MAX_WAIT_TIME
-        ).then(() => reject(`Error: "${subreddit}" seems to not exists`));
+        )
+        .then(() => reject(`Error: "${subreddit}" seems to not exists`))
+        .catch(_resolve);
       });
       log(subreddit, '-', 'Página carregada com sucesso!');
     };
