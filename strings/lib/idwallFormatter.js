@@ -22,7 +22,14 @@ class IdwallFormatter {
       }
       text = text.toString();
     }
+
     return text
+      // Substitui eventuais espaços que estejam ao redor do texto.
+      .replace(/^\s|\s$/g, '')
+      // Substitui espaços de tamanho 2 ou mais do texto para que
+      // o mesmo fique uniforme e a parte de justificação de texto
+      // distribua os espaços corretamente quando necessário.
+      .replace(/ {2,}/gm, ' ')
       // Quebra o texto em palavras.
       .split(/\s|\n/)
       // Reduz a lista de palavras em um subconjunto
@@ -100,6 +107,9 @@ class IdwallFormatter {
       .map((line) => line.replace(/^\n$/, ''))
       // Concatena todas as linhas para texto novamente.
       .join('\n')
+      // Remove a linha do fim do texto adicionada pelo join ou
+      // demais espaçamentos indesejados que estejam no fim do texto.
+      .replace(/\s+$/, '')
       // Adiciona linha extra ao fim do texto.
       .concat('\n');
   }

@@ -72,14 +72,27 @@ class RedditCrawler {
   async getSubredditsHotThreads(subreddits) {
     // Transforma o texto de subreddits em um array de subreddits.
     const subredditsList = resolveSubredditsList(subreddits);
-    // Após a listagem das threads as mesmas irão ser resolvidas em um array bidimensional.
-    // Aplica um reduce neste array de resultado para retornar o mesmo em apenas uma dimensão.
-    const reduceThreadsList = (threads) => threads.reduce((a, b) => a.concat(b), []);
-    // Aguarda as promises de todos os subreddits que estão sendo listados e por fim
-    // retorna a lista de threads de forma "reduzida".
-    return Promise.all(
-      subredditsList.map((subreddit) => this._getSubredditHotThreads(subreddit)),
-    ).then(reduceThreadsList);
+    let store = [];
+    // Cria um array de promises sendo cada promise referente à listagem
+    // de um dos subreddits da lista. As promises serão resolvidas de forma
+    // serial neste caso, e não paralelo. A cada resolução de threads, o array
+    // das mesmas será concatenado ao array temporário de armazenamento 'store'.
+    return subredditsList
+      .map((subreddit) => {
+        return ((subreddit) => {
+          return this._getSubredditHotThreads(subreddit).then((threads) => {
+            store = store.concat(threads);
+          });
+        }).bind(this, subreddit);
+      })
+      // Na linha abaixo estamos reduzindo o array de promises de acordo
+      // com a execução de forma serial.
+      .reduce((promise, task) => {
+        return promise.then(task);
+      }, Promise.resolve())
+      // Ao fim de listagem de todos os subreddits, será retornada a lista de threads
+      // resultantes que estão armazenadas no array store.
+      .then(() => store);
   }
 
   // Lista todas as threads de um único subreddit.
