@@ -145,7 +145,7 @@ class RedditCrawler {
         return await method(thread);
       } catch (exception) {
         log(subreddit, '-', exception);
-        return dflt || null;
+        return dflt || '';
       }
     };
 
