@@ -142,34 +142,34 @@ class RedditCrawler {
     // para eventuais exceptions não quebrarem a listagem de outras propriedades da thread.
     const getThreadProperty = async (thread, method, dflt) => {
       try {
-        return method(thread);
+        return await method(thread);
       } catch (exception) {
         log(subreddit, '-', exception);
         return dflt || null;
       }
     };
 
-    const getThreadTitle = async (thread) => getThreadProperty(thread, (el) => (
+    const getThreadTitle = thread => getThreadProperty(thread, (el) => (
       el.findElement(By.css(THREAD_TITLE_SELECTOR)).getText()
     ), '');
 
-    const getThreadVotes = async (thread) => getThreadProperty(thread, async (el) => {
+    const getThreadVotes = thread => getThreadProperty(thread, async (el) => {
       const votes = await el.findElement(By.css(THREAD_VOTES_SELECTOR)).getText();
       return parseSubredditVotes(votes);
     }, 0);
 
-    const getThreadSubreddit = async (thread) => getThreadProperty(thread, (el) => (
+    const getThreadSubreddit = thread => getThreadProperty(thread, (el) => (
       el.getAttribute(THREAD_SUBREDDIT_ATTR_NAME)
     ), '');
 
-    const getThreadCommentsUrl = async (thread) => getThreadProperty(thread, (el) => (
+    const getThreadCommentsUrl = thread => getThreadProperty(thread, (el) => (
       el.findElement(By.css(THREAD_COMMENTS_URL_SELECTOR)).getAttribute('href')
     ), '');
 
-    const getThreadUrl = async (thread) => getThreadProperty(thread, (el) => (
+    const getThreadUrl = thread => getThreadProperty(thread, (el) => (
       el.findElement(By.css(THREAD_URL_SELECTOR)).getAttribute('href')
     ), '');
-
+    
     // Recebe o elemento web que representa o tópico da thread e busca
     // dentro deste elemento todos os demais elementos aonde estão os textos
     // das propriedades da thread.
